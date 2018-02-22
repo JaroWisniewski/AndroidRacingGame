@@ -32,7 +32,26 @@ public class Wall implements GameObject {
     }
 
     public boolean playerCollision(GameCharacter player) {
-       return Rect.intersects(Right, player.getCharacter()) || Left.contains(player.getCharacter().left, player.getCharacter().top);//try Intersects
+        if(Left.contains(player.getCharacter().left, player.getCharacter().top) ||
+                Left.contains(player.getCharacter().right, player.getCharacter().top) ||
+                Left.contains(player.getCharacter().left, player.getCharacter().bottom) ||
+                Left.contains(player.getCharacter().right, player.getCharacter().bottom) ||
+                Left.contains(player.getCharacter().centerX(), player.getCharacter().top) ||
+                Left.contains(player.getCharacter().left, player.getCharacter().centerY()) ||
+                Left.contains(player.getCharacter().right, player.getCharacter().centerY())||
+
+                        Right.contains(player.getCharacter().left, player.getCharacter().top) ||
+                        Right.contains(player.getCharacter().right, player.getCharacter().top) ||
+                        Right.contains(player.getCharacter().left, player.getCharacter().bottom) ||
+                        Right.contains(player.getCharacter().right, player.getCharacter().bottom) ||
+                        Right.contains(player.getCharacter().centerX(), player.getCharacter().top) ||
+                        Right.contains(player.getCharacter().left, player.getCharacter().centerY()) ||
+                        Right.contains(player.getCharacter().right, player.getCharacter().centerY())
+                )
+        {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -27,7 +27,7 @@ import java.util.Random;
  * Created by jaros on 10/02/2018.
  */
 
-public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
+public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*, SensorEventListener*/ {
     private MainThread thread;
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms
     private static final int FROM_RADS_TO_DEGS = -57;
@@ -57,11 +57,17 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, S
 
         setFocusable(true);
 
+        /*
         SensMan = (SensorManager) Context.getSystemService(Context.SENSOR_SERVICE);
         Sensor = SensMan.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         SensMan.registerListener(this, Sensor, SENSOR_DELAY);
+*/
+        sideMovement = getWidth()/2;
+        PlayerPoint = new Point(sideMovement, getHeight()/2);
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
 
-        Wall_Manager = new Wall_Manager(1000, 800,10);
+        int gap = 4*Constants.Screen_Width/5;
+        Wall_Manager = new Wall_Manager(gap, 800,10, Player);
 
     }
 
@@ -74,7 +80,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, S
 
         sideMovement = getWidth()/2;
         PlayerPoint = new Point(sideMovement, getHeight()/2);
-        Player = new GameCharacter(new Rect(200, 200, 20, 20), Color.rgb(0,0,255));
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
 
 
         ObstaclePoint = new Point(300, 0);
@@ -110,53 +116,55 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, S
 // -------------------- Touch Event ----------------------------
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-      /* switch(event.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-            PlayerPoint.set((int) event.getX(), (int) event.getY());
+                PlayerPoint.set((int) event.getX(), (int) event.getY());
 
-        */    return true;
+                return true;
+        }
+        return false;
     }
-    public boolean collisionCheck(){
-        if(obsOne.playerCollision(Player) || obsTwo.playerCollision(Player)) {
-        return true;
+
+    public boolean collisionCheck() {
+        if (obsOne.playerCollision(Player) || obsTwo.playerCollision(Player)) {
+            return true;
         }
         return false;
     }
 
     public void update() {
-        if (Wall_Manager.collisionCheck(Player)) {
+        if (Wall_Manager.collisionCheck(Player) || collisionCheck()) {
             Player.setColor(Color.rgb(255, 0, 0));
-        }
-        else //(Wall_Manager.WallcollisionCheck(Player) == false){
-        { Player.setColor(Color.rgb(255, 255, 255));
+        } else //(Wall_Manager.WallcollisionCheck(Player) == false){
+        {
+            Player.setColor(Color.rgb(255, 255, 255));
         }/*
         else {
             Player.setColor(Color.rgb(0, 255, 0));
         }*/
-            if (ObstaclePoint.y < getHeight() - 10) {
-                ObstaclePoint.y += 10;
-            } else {
-                ObstaclePoint.y = 0;
-                random = new Random();
-                ObstaclePoint.x = random.nextInt(getWidth());
-            }
-            if (ObstaclePoint2.y < getHeight() - 10) {
-                ObstaclePoint2.y += 10;
-            } else {
-                ObstaclePoint2.y = 0;
-                random = new Random();
-                ObstaclePoint2.x = random.nextInt(getWidth());
-            }
-            Player.update(PlayerPoint);
-            obsOne.update(ObstaclePoint);
-            obsTwo.update(ObstaclePoint2);
-            Wall_Manager.update();
+        if (ObstaclePoint.y < getHeight() - 10) {
+            ObstaclePoint.y += 10;
+        } else {
+            ObstaclePoint.y = 0;
+            random = new Random();
+            ObstaclePoint.x = random.nextInt(getWidth());
+        }
+        if (ObstaclePoint2.y < getHeight() - 10) {
+            ObstaclePoint2.y += 10;
+        } else {
+            ObstaclePoint2.y = 0;
+            random = new Random();
+            ObstaclePoint2.x = random.nextInt(getWidth());
+        }
+        Player.update(PlayerPoint);
+        obsOne.update(ObstaclePoint);
+        obsTwo.update(ObstaclePoint2);
+        Wall_Manager.update();
     }
 
     @Override
-    public void draw (Canvas canvas)
-    {
+    public void draw(Canvas canvas) {
         super.draw(canvas);
 
         Paint Background = new Paint(Color.BLACK);
@@ -172,7 +180,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, S
         Player.draw(canvas);
 
     }
-
+}
+/*
     // ------------------- Sensor movement change ----------------------------
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -247,7 +256,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback, S
     }
 
 }
-/* -------------------------- Character Example Function -------------------------
+ -------------------------- Character Example Function -------------------------
     public class Character {
             public int posX;
             public int posY;

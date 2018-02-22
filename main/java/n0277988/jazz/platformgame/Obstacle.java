@@ -18,11 +18,19 @@ public class Obstacle implements GameObject {
         this.color = Color;
     }
 
+    public Obstacle(int left, int top, int right, int bottom, int Color){
+        this.color = Color;
+        this.Obstacle = new Rect(left, top, right, bottom);
+    }
+
     public boolean playerCollision(GameCharacter player){
         if(Obstacle.contains(player.getCharacter().left, player.getCharacter().top) ||
                 Obstacle.contains(player.getCharacter().right, player.getCharacter().top) ||
                 Obstacle.contains(player.getCharacter().left, player.getCharacter().bottom) ||
-                Obstacle.contains(player.getCharacter().right, player.getCharacter().bottom))
+                Obstacle.contains(player.getCharacter().right, player.getCharacter().bottom)||
+                Obstacle.contains(player.getCharacter().centerX(), player.getCharacter().top) ||
+                Obstacle.contains(player.getCharacter().left, player.getCharacter().centerY()) ||
+                Obstacle.contains(player.getCharacter().right, player.getCharacter().centerY()))
         {
             return true;
         }
