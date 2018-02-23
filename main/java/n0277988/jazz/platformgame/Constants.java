@@ -7,5 +7,5 @@ package n0277988.jazz.platformgame;
 public class Constants {
     public static int Screen_Height;
     public static int Screen_Width;
-    public static int Finish = 10;
+    public static int Finish = 100;
 }

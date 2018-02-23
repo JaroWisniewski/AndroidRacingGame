@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
+public GameScreen GamePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,9 @@ public class MainActivity extends Activity {
         Constants.Screen_Height = DM.heightPixels;
         Constants.Screen_Width = DM.widthPixels;
 
-        setContentView(new GameScreen(this));
+        GamePanel = new GameScreen(this);
+
+        setContentView(GamePanel);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

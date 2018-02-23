@@ -1,26 +1,15 @@
 package n0277988.jazz.platformgame;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.hardware.TriggerEvent;
-import android.hardware.TriggerEventListener;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.lang.reflect.Array;
 import java.util.Random;
 
 /**
@@ -33,15 +22,15 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
    // private static final int FROM_RADS_TO_DEGS = -57;
    // Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.character);
     GameCharacter Player;
-    Obstacle obsOne;
-    Obstacle obsTwo;
+    Boost obsOne;
+    Boost obsTwo;
     Point PlayerPoint;
     Point ObstaclePoint;
     Point ObstaclePoint2;
     Random random;
     private Wall_Manager Wall_Manager;
-    public SensorManager SensMan;
-    public Sensor Sensor;
+   // public SensorManager SensMan;
+   // public Sensor Sensor;
     private Context Context;
     private int sideMovement = 0;
 
@@ -82,10 +71,10 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
 
 
-        ObstaclePoint = new Point(300, 0);
+        ObstaclePoint = new Point(300, 0);//TODO Delete obstacle
         ObstaclePoint2 = new Point(600, 0);
-        obsTwo = new Obstacle(new Rect(100, 100, 200 , 200), Color.rgb(255,0,0));
-        obsOne = new Obstacle(new Rect(100, 100, 200, 200), Color.rgb(255,0,0));
+        obsTwo = new Boost(new Rect(100, 100, 200 , 200), Color.rgb(255,0,0));
+        obsOne = new Boost(new Rect(100, 100, 200, 200), Color.rgb(255,0,0));
 
 
     }
@@ -119,7 +108,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
                 PlayerPoint.set((int) event.getX(), (int) event.getY());
-
                 return true;
         }
         return false;
@@ -133,7 +121,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     }
 
     public void update() {
-        if (collisionCheck())
+        if (collisionCheck() || Wall_Manager.boostCheckO(Player))
         {
             Wall_Manager.increaseSpeed();
         }
@@ -148,7 +136,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         }
 
 
-        if (ObstaclePoint.y < getHeight() - 10) {
+        if (ObstaclePoint.y < getHeight() - 10) { //TODO Delete Object movement
             ObstaclePoint.y += 10;
         } else {
             ObstaclePoint.y = 0;
@@ -162,10 +150,14 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
             random = new Random();
             ObstaclePoint2.x = random.nextInt(getWidth());
         }
+
+
         Player.update(PlayerPoint);
         obsOne.update(ObstaclePoint);
         obsTwo.update(ObstaclePoint2);
+
         Wall_Manager.update();
+
     }
 
     @Override
