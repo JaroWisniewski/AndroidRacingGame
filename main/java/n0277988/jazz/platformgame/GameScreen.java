@@ -1,6 +1,8 @@
 package n0277988.jazz.platformgame;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +22,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     private MainThread thread;
    // private static final int SENSOR_DELAY = 500 * 1000; // 500ms
    // private static final int FROM_RADS_TO_DEGS = -57;
-   // Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.character);
+    Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.spaceship);
     GameCharacter Player;
     Boost obsOne;
     Boost obsTwo;
@@ -50,9 +52,10 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Sensor = SensMan.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         SensMan.registerListener(this, Sensor, SENSOR_DELAY);
 */
+        Bitmap CharTextSmall = Bitmap.createScaledBitmap(CharMap, 180, 180, true);
         sideMovement = getWidth()/2;
         PlayerPoint = new Point(sideMovement, getHeight()/2);
-        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
 
         int gap = 4*Constants.Screen_Width/5;
         Wall_Manager = new Wall_Manager(gap, 800,30, Player);
@@ -66,9 +69,10 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         thread.setRunning(true);
         thread.start();
 
+        Bitmap CharTextSmall = Bitmap.createScaledBitmap(CharMap, 180, 180, true);
         sideMovement = getWidth()/2;
         PlayerPoint = new Point(sideMovement, getHeight()/2);
-        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
 
 
         ObstaclePoint = new Point(300, 0);//TODO Delete obstacle

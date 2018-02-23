@@ -62,6 +62,7 @@ public class Wall {
         CharColor.setColor(color);
         canvas.drawRect(Left, CharColor);
         canvas.drawRect(Right, CharColor);
+      //  canvas.drawBitmap(character_bitmap, Character.left - , Character.top - , null);
     }
 
 

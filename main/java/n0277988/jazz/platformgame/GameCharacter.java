@@ -1,5 +1,8 @@
 package n0277988.jazz.platformgame;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -11,11 +14,13 @@ import android.graphics.Rect;
 
 public class GameCharacter implements GameObject {
 
+    private Bitmap character_bitmap;
     private Rect Character;
     private int color;
 
-    public GameCharacter(Rect Rect, int Color)
+    public GameCharacter(Rect Rect, int Color, Bitmap bitmap)
     {
+        character_bitmap = bitmap;
         this.Character = Rect;
         this.color = Color;
     }
@@ -30,9 +35,10 @@ public class GameCharacter implements GameObject {
 
     @Override
     public void draw(Canvas canvas) {
-        Paint CharColor = new Paint();
-        CharColor.setColor(color);
-        canvas.drawRect(Character, CharColor);
+       // Paint CharColor = new Paint();
+       // CharColor.setColor(color);
+       // canvas.drawRect(Character, CharColor);
+        canvas.drawBitmap(character_bitmap, Character.left, Character.top, null);
     }
 
     @Override
@@ -43,5 +49,4 @@ public class GameCharacter implements GameObject {
     public void update (Point point)    {
         Character.set(point.x - Character.width()/2, point.y - Character.height()/2, point.x + Character.width()/2, point.y + Character.height()/2);
     }
-
 }
