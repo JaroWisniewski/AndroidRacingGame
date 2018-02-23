@@ -29,8 +29,8 @@ import java.util.Random;
 
 public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*, SensorEventListener*/ {
     private MainThread thread;
-    private static final int SENSOR_DELAY = 500 * 1000; // 500ms
-    private static final int FROM_RADS_TO_DEGS = -57;
+   // private static final int SENSOR_DELAY = 500 * 1000; // 500ms
+   // private static final int FROM_RADS_TO_DEGS = -57;
    // Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.character);
     GameCharacter Player;
     Obstacle obsOne;
@@ -44,7 +44,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     public Sensor Sensor;
     private Context Context;
     private int sideMovement = 0;
-    private int dMovement;
 
     public GameScreen(Context context) {
         super(context);
@@ -67,7 +66,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255));
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, 800,10, Player);
+        Wall_Manager = new Wall_Manager(gap, 800,30, Player);
 
     }
 
@@ -134,15 +133,21 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     }
 
     public void update() {
-        if (Wall_Manager.collisionCheck(Player) || collisionCheck()) {
+        if (collisionCheck())
+        {
+            Wall_Manager.increaseSpeed();
+        }
+        if (Wall_Manager.collisionCheck(Player))
+        {
             Player.setColor(Color.rgb(255, 0, 0));
-        } else //(Wall_Manager.WallcollisionCheck(Player) == false){
+            Wall_Manager.decreaseSpeed();
+        }
+        else
         {
             Player.setColor(Color.rgb(255, 255, 255));
-        }/*
-        else {
-            Player.setColor(Color.rgb(0, 255, 0));
-        }*/
+        }
+
+
         if (ObstaclePoint.y < getHeight() - 10) {
             ObstaclePoint.y += 10;
         } else {

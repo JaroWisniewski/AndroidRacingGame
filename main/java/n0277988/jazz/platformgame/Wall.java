@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
  * Created by jaros on 16/02/2018.
  */
 
-public class Wall implements GameObject {
+public class Wall {
     private Rect Left;
     private Rect Right;
     private int color;
@@ -27,11 +27,13 @@ public class Wall implements GameObject {
         return Right.top;
     }
 
-    public int getBottom(){
-        return Right.bottom;
+    public boolean isFinish()
+    {
+        return false;
     }
 
     public boolean playerCollision(GameCharacter player) {
+
         if(Left.contains(player.getCharacter().left, player.getCharacter().top) ||
                 Left.contains(player.getCharacter().right, player.getCharacter().top) ||
                 Left.contains(player.getCharacter().left, player.getCharacter().bottom) ||
@@ -54,7 +56,7 @@ public class Wall implements GameObject {
         return false;
     }
 
-    @Override
+
     public void draw(Canvas canvas) {
         Paint CharColor = new Paint();
         CharColor.setColor(color);
@@ -70,7 +72,7 @@ public class Wall implements GameObject {
         Right.bottom += speed;
     }
 
-    @Override
+
     public void update() {
     }
 }

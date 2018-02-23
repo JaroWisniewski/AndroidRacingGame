@@ -19,18 +19,22 @@ public class Wall_Manager {
     private int Gap;
     private int thickness;
     private int speed;
-    private int LastGap;
+    private int Checkpoint;
     private int LastLeft;
     private int playerWidth;
+    private boolean start;
+    private long Time;
 
 
     public Wall_Manager(int gap, int thickness, int speed, GameCharacter player){
         this.Gap = gap;
         this.thickness = thickness;
         this.speed = speed;
-        this.LastGap = Gap;
+        this.Checkpoint = 0;
         this.LastLeft = 10;
         this.playerWidth = player.getCharacter().width();
+        this.start = false;
+        this.Time = 0;
 
         Level = new ArrayList<>();
 
@@ -40,64 +44,78 @@ public class Wall_Manager {
 
     public void CreateLevel(){
         int CreateY = -2*Constants.Screen_Height;
-        int NewGap = LastGap + (int) (Math.random()*101 )- 50; //TODO Check wall spawning Left Side
-        int NewLeft = LastLeft + (int) (Math.random()*101 )- 50;
-
-        while (CreateY < 0) {
-            while (NewGap < 3 * Gap / 4) {
-                NewGap = LastGap + (int) (Math.random() * 50) - 50;
+        while (CreateY < 0){
+            int NewLeft = (int)(Math.random()* Constants.Screen_Width/4);
+            int NewGap = 0;
+            while (NewGap < 3*Gap/4){
+                NewGap = (int) (Math.random()*Gap);
             }
-            while (NewLeft < 0 || NewLeft + NewGap > Constants.Screen_Width){
-                NewLeft = LastLeft + (int) (Math.random() * 101) - 50;}
-            Log.d("New Left", Integer.toString(NewLeft));//TODO Remove all Logs
-            Log.d("New Gap", Integer.toString(NewGap));
             Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, Color.YELLOW));
+            Checkpoint += 1;
             CreateY += thickness;
         }
-        LastLeft = NewLeft;
-        LastGap = NewGap;
     }
 
-    public void update() {
-        int NewLeft = LastLeft;
-        int NewGap = LastGap;
-        for (Wall El : Level) {
-            El.move(speed);
-        }
-        if (Level.get(Level.size() - 1).getTop() >= Constants.Screen_Height) {
-            Level.remove(Level.size() - 1);
-            if (Math.random() > 0.2) {
-                if (LastGap <= playerWidth*2){
-                LastGap = Gap;
+    public void update(){
+        if(Level.get(Level.size()-1).getTop() >= Constants.Screen_Height )
+        {
+            if(Level.get(Level.size()-1).isFinish())
+            {
+                if(start) {
+                    Time = System.nanoTime() - Time;
+                    double Seconds = (double) Time / 1000000000.0;
+                    Log.d("Time-------------", Double.toString(Seconds));
+                    start = false;
                 }
-                NewGap = LastGap + (int) (Math.random() * 101) - 50;
-                while (NewGap < 3 * Gap / 4) {
-                    NewGap = LastGap + (int) (Math.random() * 101) - 50;
-                }
-                while (NewLeft < 0 || NewLeft + NewGap > Constants.Screen_Width) {
-                    NewLeft = LastLeft + (int) (Math.random() * 101) - 50;
-                }
-                Log.d("New Left", Integer.toString(NewLeft));
-                Log.d("New Gap", Integer.toString(NewGap));
-                Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW));
             }
             else
             {
+                if(!start)
+                {
+                start = true;
+                Time = System.nanoTime();
+                }
 
-                while (NewGap < playerWidth || NewGap > (playerWidth * 2) ) { // TODO Widen the gap
+                Level.remove(Level.size() - 1);
+                int NewLeft = LastLeft + (int) (Math.random() * playerWidth + 1) - (int) (playerWidth / 2);
+                while (NewLeft < 0) {
+                    NewLeft = LastLeft + (int) (Math.random() * playerWidth + 1) - (int) (playerWidth / 2);
+                }
+                int NewGap = 0;
+                while (NewGap < playerWidth * 2) {
                     NewGap = (int) (Math.random() * Gap);
-                    Log.d("New Gap Hole", Integer.toString(NewGap));
                 }
-                while (NewLeft < 0 || NewLeft + NewGap > Constants.Screen_Width) {
-                    NewLeft = LastLeft + (int) (Math.random() * 101) - 50;
+                if (Checkpoint >= Constants.Finish) {
+                    Level.add(0, new Finish(NewLeft, thickness, Level.get(0).getTop() - thickness, 0, Color.RED));
                 }
-                Log.d("New Left Hole", Integer.toString(NewLeft));
-
-                Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW));
+                else
+                {
+                    Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW));
+                    Checkpoint += 1;
+                }
+                Log.d("Screen", Integer.toString(Constants.Screen_Width));
+                if (Gap > (playerWidth * 2) + 10) {
+                    Gap -= 10;
+                }
+                LastLeft = NewLeft;
+                Log.d("D", Integer.toString(LastLeft));
             }
         }
-        LastGap = NewGap;
-        LastLeft = NewLeft;
+        for(Wall El : Level){
+            El.move(speed);
+        }
+    }
+
+    public void increaseSpeed()
+    {
+        speed += 2;
+    }
+
+    public void decreaseSpeed()
+    {
+        if(speed > 5){
+        speed -= 2;
+        }
     }
 
     public void draw(Canvas canvas){

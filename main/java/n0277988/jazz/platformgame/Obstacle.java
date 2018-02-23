@@ -49,6 +49,13 @@ public class Obstacle implements GameObject {
 
     }
 
+    public void move(float speed) {
+        Obstacle.top += speed;
+        Obstacle.bottom += speed;
+        Obstacle.top += speed;
+        Obstacle.bottom += speed;
+    }
+
     public void update(Point point){
         Obstacle.set(point.x - Obstacle.width()/2, point.y - Obstacle.height()/2, point.x + Obstacle.width()/2, point.y + Obstacle.height()/2);
     }
