@@ -58,7 +58,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, 800,30, Player);
+        Wall_Manager = new Wall_Manager(gap, 180,30, Player, CharTextSmall);
 
     }
 

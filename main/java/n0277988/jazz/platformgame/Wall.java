@@ -1,5 +1,6 @@
 package n0277988.jazz.platformgame;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -16,11 +17,15 @@ public class Wall {
     private Rect Left;
     private Rect Right;
     private int color;
+    private Bitmap wall_texture;
 
-    public Wall(int LeftSide, int Thickness, int Top, int gap, int Color) {
+
+    //TODO Bitmap added -- control the change
+    public Wall(int LeftSide, int Thickness, int Top, int gap, int Color, Bitmap map) {
         this.Left = new Rect(0, Top, LeftSide, Top + Thickness);
         this.Right = new Rect(LeftSide + gap, Top, Constants.Screen_Width, Top + Thickness);
         this.color = Color;
+        wall_texture = map;
     }
 
     public int getTop(){
@@ -58,11 +63,24 @@ public class Wall {
 
 
     public void draw(Canvas canvas) {
+        int x = 0 ;
         Paint CharColor = new Paint();
         CharColor.setColor(color);
         canvas.drawRect(Left, CharColor);
         canvas.drawRect(Right, CharColor);
-      //  canvas.drawBitmap(character_bitmap, Character.left - , Character.top - , null);
+        x = Left.right;
+        //TODO Check the texture attachment and fps
+       /* while (x >= (0-wall_texture.getWidth())) {
+            canvas.drawBitmap(wall_texture, x - wall_texture.getWidth(), Left.bottom, null);
+            x -= wall_texture.getWidth();
+        }
+        x = Right.left;
+        while (x+wall_texture.getWidth() <= Constants.Screen_Width)
+        {
+            canvas.drawBitmap(wall_texture, x, Left.bottom, null);
+            x += wall_texture.getWidth();
+
+        }*/
     }
 
 

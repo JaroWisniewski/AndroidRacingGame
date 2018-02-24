@@ -1,5 +1,7 @@
 package n0277988.jazz.platformgame;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -27,9 +29,11 @@ public class Wall_Manager {
     private boolean start; // Level time counter start
     private long lvlTime;
     private long startTime;
+    private Bitmap wall;
 
 
-    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player){
+    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap map){
+        this.wall = map;
         this.Gap = gap;
         this.LastGap = gap;
         this.thickness = thickness;
@@ -60,7 +64,7 @@ public class Wall_Manager {
             {
                 NewGap = (int) (Math.random()*Gap);
             }
-            Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, Color.YELLOW));
+            Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, Color.YELLOW, wall));
 
             Checkpoint += 1;
             CreateY += thickness;
@@ -107,12 +111,12 @@ public class Wall_Manager {
 
                 if (Checkpoint == Constants.Finish)
                 {
-                    Level.add(0, new Finish(NewLeft, thickness, Level.get(0).getTop() - thickness, 0, Color.RED));
+                    Level.add(0, new Finish(NewLeft, thickness, Level.get(0).getTop() - thickness, 0, Color.RED, wall));
                     Checkpoint += 1;
                 }
                 else
                 {
-                    Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW));
+                    Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW, wall));
                     Checkpoint += 1;
                 }
 
