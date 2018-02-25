@@ -30,10 +30,14 @@ public class Wall_Manager {
     private long lvlTime;
     private long startTime;
     private Bitmap wall;
+    private Bitmap finish;
+    private Bitmap arrow;
 
 
-    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap map){
-        this.wall = map;
+    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost){
+        this.wall = wall;
+        this.finish = finish;
+        this.arrow = boost;
         this.Gap = gap;
         this.LastGap = gap;
         this.thickness = thickness;
@@ -69,7 +73,7 @@ public class Wall_Manager {
             Checkpoint += 1;
             CreateY += thickness;
         }
-        BoostLevel.add(0, new Boost(NewLeft + 20, CreateY - 100, Color.BLUE));
+        BoostLevel.add(0, new Boost(NewLeft + 20, CreateY - 100, Color.BLUE, arrow));
     }
 
     public void update(){
@@ -111,7 +115,7 @@ public class Wall_Manager {
 
                 if (Checkpoint == Constants.Finish)
                 {
-                    Level.add(0, new Finish(NewLeft, thickness, Level.get(0).getTop() - thickness, 0, Color.RED, wall));
+                    Level.add(0, new Finish(Constants.Screen_Width, thickness, Level.get(0).getTop() - thickness, 0, Color.RED, finish));
                     Checkpoint += 1;
                 }
                 else
@@ -133,7 +137,7 @@ public class Wall_Manager {
         if (BoostLevel.get(0).getTop() >= Constants.Screen_Height )
         {
             BoostLevel.remove(BoostLevel.size()-1);
-            BoostLevel.add(0, new Boost(LastLeft + 10 + (int) (Math.random() * (LastGap - 100)), Level.get(0).getTop(), Color.BLUE));
+            BoostLevel.add(0, new Boost(LastLeft + 10 + (int) (Math.random() * (LastGap - 100)), Level.get(0).getTop(), Color.BLUE, arrow));
         }
         for(Wall El : Level)
         {
@@ -143,6 +147,8 @@ public class Wall_Manager {
         {
             X.move(speed);
         }
+        if (speed < 50)
+        {speed++;}
     }
 
     public double getTime(){
@@ -151,7 +157,7 @@ public class Wall_Manager {
 
     public void increaseSpeed()
     {
-        speed += 3;
+        speed += 10;
     }
 
     public void decreaseSpeed()
@@ -189,5 +195,10 @@ public class Wall_Manager {
                 return true;
         }
         return false;
+    }
+
+    public int getSpeed()
+    {
+        return speed;
     }
 }

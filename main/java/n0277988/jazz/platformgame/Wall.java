@@ -14,10 +14,10 @@ import java.lang.ref.WeakReference;
  */
 
 public class Wall {
-    private Rect Left;
+    protected Rect Left;
     private Rect Right;
     private int color;
-    private Bitmap wall_texture;
+    protected Bitmap wall_texture;
 
 
     //TODO Bitmap added -- control the change
@@ -70,17 +70,17 @@ public class Wall {
         canvas.drawRect(Right, CharColor);
         x = Left.right;
         //TODO Check the texture attachment and fps
-       /* while (x >= (0-wall_texture.getWidth())) {
-            canvas.drawBitmap(wall_texture, x - wall_texture.getWidth(), Left.bottom, null);
+        while (x >= (0-wall_texture.getWidth())) {
+            canvas.drawBitmap(wall_texture, x - wall_texture.getWidth(), Left.top, null);
             x -= wall_texture.getWidth();
         }
         x = Right.left;
-        while (x+wall_texture.getWidth() <= Constants.Screen_Width)
+        while (x <= Constants.Screen_Width)
         {
-            canvas.drawBitmap(wall_texture, x, Left.bottom, null);
+            canvas.drawBitmap(wall_texture, x, Right.top, null);
             x += wall_texture.getWidth();
 
-        }*/
+        }
     }
 
 

@@ -22,14 +22,15 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     private MainThread thread;
    // private static final int SENSOR_DELAY = 500 * 1000; // 500ms
    // private static final int FROM_RADS_TO_DEGS = -57;
-    Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.spaceship);
-    GameCharacter Player;
-    Boost obsOne;
-    Boost obsTwo;
-    Point PlayerPoint;
-    Point ObstaclePoint;
-    Point ObstaclePoint2;
-    Random random;
+    private Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.car);
+    private Bitmap grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
+    private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
+    private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
+    private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
+    private GameCharacter Player;
+    private Background Road;
+    private Point PlayerPoint;
+    private Random random;
     private Wall_Manager Wall_Manager;
    // public SensorManager SensMan;
    // public Sensor Sensor;
@@ -52,13 +53,16 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Sensor = SensMan.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         SensMan.registerListener(this, Sensor, SENSOR_DELAY);
 */
-        Bitmap CharTextSmall = Bitmap.createScaledBitmap(CharMap, 180, 180, true);
+        Bitmap arrow = Bitmap.createScaledBitmap(Arrow, 100, 100, true);
+        Bitmap finishSmall = Bitmap.createScaledBitmap(finish, 256,256,true);
         sideMovement = getWidth()/2;
         PlayerPoint = new Point(sideMovement, getHeight()/2);
-        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharMap);
+
+        Road = new Background(asphalt);
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, 180,30, Player, CharTextSmall);
+        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow);
 
     }
 
@@ -73,13 +77,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         sideMovement = getWidth()/2;
         PlayerPoint = new Point(sideMovement, getHeight()/2);
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
-
-
-        ObstaclePoint = new Point(300, 0);//TODO Delete obstacle
-        ObstaclePoint2 = new Point(600, 0);
-        obsTwo = new Boost(new Rect(100, 100, 200 , 200), Color.rgb(255,0,0));
-        obsOne = new Boost(new Rect(100, 100, 200, 200), Color.rgb(255,0,0));
-
 
     }
 
@@ -117,15 +114,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         return false;
     }
 
-    public boolean collisionCheck() {
-        if (obsOne.playerCollision(Player) || obsTwo.playerCollision(Player)) {
-            return true;
-        }
-        return false;
-    }
-
     public void update() {
-        if (collisionCheck() || Wall_Manager.boostCheckO(Player))
+        if ( Wall_Manager.boostCheckO(Player))
         {
             Wall_Manager.increaseSpeed();
         }
@@ -140,25 +130,9 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         }
 
 
-        if (ObstaclePoint.y < getHeight() - 10) { //TODO Delete Object movement
-            ObstaclePoint.y += 10;
-        } else {
-            ObstaclePoint.y = 0;
-            random = new Random();
-            ObstaclePoint.x = random.nextInt(getWidth());
-        }
-        if (ObstaclePoint2.y < getHeight() - 10) {
-            ObstaclePoint2.y += 10;
-        } else {
-            ObstaclePoint2.y = 0;
-            random = new Random();
-            ObstaclePoint2.x = random.nextInt(getWidth());
-        }
-
-
         Player.update(PlayerPoint);
-        obsOne.update(ObstaclePoint);
-        obsTwo.update(ObstaclePoint2);
+
+        Road.move(Wall_Manager.getSpeed());
 
         Wall_Manager.update();
 
@@ -168,15 +142,9 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        Paint Background = new Paint(Color.BLACK);
-
-        canvas.drawRect(0, 0, getWidth(), getHeight(), Background);
+        Road.draw(canvas);
 
         Wall_Manager.draw(canvas);
-
-        obsOne.draw(canvas);
-
-        obsTwo.draw(canvas);
 
         Player.draw(canvas);
 
@@ -255,35 +223,4 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Log.d("Move", Float.toString(sideMovement));
 
     }
-
-}
- -------------------------- Character Example Function -------------------------
-    public class Character {
-            public int posX;
-            public int posY;
-            private Bitmap character_bitmap;
-            public boolean jump;
-
-            public Character(Bitmap map, int x, int y) {
-                posX = x;
-                posY = y;
-                character_bitmap = map;
-            }
-
-            public int getWidth() {
-                return character_bitmap.getWidth();
-            }
-
-            public int getHeight() {
-                return character_bitmap.getHeight();
-            }
-
-            public void drawCharacter(Canvas canvas) {
-                canvas.drawBitmap(character_bitmap, posX - getWidth() / 2, posY - getHeight() / 2, new Paint());
-            }
-
-        }
-
-    }*/
-
 
