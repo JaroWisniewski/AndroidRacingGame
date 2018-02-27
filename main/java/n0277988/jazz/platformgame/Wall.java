@@ -16,15 +16,24 @@ import java.lang.ref.WeakReference;
 public class Wall {
     protected Rect Left;
     private Rect Right;
-    private int color;
     protected Bitmap wall_texture;
 
 
-    public Wall(int LeftSide, int Thickness, int Top, int gap, int Color, Bitmap map) {
+    public Wall(int LeftSide, int Thickness, int Top, int gap, Bitmap map) {
         this.Left = new Rect(0, Top, LeftSide, Top + Thickness);
         this.Right = new Rect(LeftSide + gap, Top, Constants.Screen_Width, Top + Thickness);
-        this.color = Color;
         wall_texture = map;
+    }
+
+    public void modify(int LeftS, int thick, int top, int gap)
+    {
+        Left.top = top;
+        Left.bottom = top+thick;
+        Left.right = LeftS;
+
+        Right.left = LeftS + gap;
+        Right.top = top;
+        Right.bottom = top + thick;
     }
 
     public int getTop(){

@@ -12,19 +12,24 @@ import android.graphics.Rect;
 
 public class Boost implements GameObject {
     private Rect Object;
-    private int color;
     protected Bitmap arrow;
 
     public Boost(Rect Rect, int Color, Bitmap map) {
         this.Object = Rect;
-        this.color = Color;
         this.arrow = map;
     }
 
-    public Boost(int left, int top, int Color, Bitmap map){
-        this.color = Color;
+    public Boost(int left, int top, Bitmap map){
         this.Object = new Rect(left, top, left + 100, top + 100);
         this.arrow = map;
+    }
+
+    public void modify(int Left, int top)
+    {
+        Object.top = top;
+        Object.bottom = top+100;
+        Object.right = Left+100;
+        Object.left = Left;
     }
 
     public boolean playerCollision(GameCharacter player){
@@ -47,9 +52,6 @@ public class Boost implements GameObject {
 
     @Override
     public void draw(Canvas canvas) {
-       // Paint ObstacleColor = new Paint();
-       // ObstacleColor.setColor(color);
-       // canvas.drawRect(Object, ObstacleColor);
         canvas.drawBitmap(arrow, Object.left, Object.top, null);
     }
 

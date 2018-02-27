@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import n0277988.jazz.platformgame.Constants;
 import n0277988.jazz.platformgame.Wall;
@@ -26,17 +27,19 @@ public class Wall_Manager {
     private int Checkpoint;
     private int LastLeft;
     private int playerWidth;
-    private boolean start; // Level time counter start
+    private boolean start;// Level time counter start
+    private boolean levelFinished;// levelFinished (go to score Screen
     private long lvlTime;
     private long startTime;
     private Bitmap wall;
-    private Bitmap finish;
+    private Bitmap finishMap;
     private Bitmap arrow;
+    private boolean pause;
 
 
     public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost){
         this.wall = wall;
-        this.finish = finish;
+        this.finishMap = finish;
         this.arrow = boost;
         this.Gap = gap;
         this.LastGap = gap;
@@ -48,6 +51,8 @@ public class Wall_Manager {
         this.start = false;
         this.lvlTime = 0;
         this.startTime = 0;
+        this.levelFinished = false;
+        this.pause = false;
 
         Level = new ArrayList<>();
 
@@ -68,35 +73,30 @@ public class Wall_Manager {
             {
                 NewGap = (int) (Math.random()*Gap);
             }
-            Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, Color.YELLOW, wall));
+            Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, wall));
 
             Checkpoint += 1;
             CreateY += thickness;
         }
-        BoostLevel.add(0, new Boost(NewLeft + 20, CreateY - 100, Color.BLUE, arrow));
+        BoostLevel.add(0, new Boost(NewLeft + 20, CreateY - 100, arrow));
     }
 
     public void update(){
+        if(Level.get(Level.size()-1).isFinish() && Level.get(Level.size()-1).getTop() > 3*Constants.Screen_Height/4 && start)
+        {
+            lvlTime = System.nanoTime() - startTime;
+            double Seconds = (double) lvlTime / 1000000000.0;
+            Log.d("Time-------------", Double.toString(Seconds));
+            start = false;
+            levelFinished = true;
+        }
         if(Level.get(Level.size()-1).getTop() >= Constants.Screen_Height )
         {
-            if(Level.get(Level.size()-1).isFinish())
-            {
-                if(start) {
-                    lvlTime = System.nanoTime() - startTime;
-                    double Seconds = (double) lvlTime / 1000000000.0;
-                    Log.d("Time-------------", Double.toString(Seconds));
-                    start = false;
-                }
-            }
-            else
-            {
-                if(!start) // Start timer
+               if(!start && !levelFinished) // Start timer
                     {
                         start = true;
                         startTime = System.nanoTime();
                     }
-
-                Level.remove(Level.size() - 1);
 
                 int NewLeft = -1;
                 int NewGap = 0;
@@ -115,12 +115,18 @@ public class Wall_Manager {
 
                 if (Checkpoint == Constants.Finish)
                 {
-                    Level.add(0, new Finish(Constants.Screen_Width, thickness, Level.get(0).getTop() - thickness, 0, Color.RED, finish));
+                    Level.add(0, new Finish(Constants.Screen_Width, thickness, Level.get(0).getTop() - thickness, 0, Color.RED, finishMap));
                     Checkpoint += 1;
+                }
+                else if(Level.get(Level.size() - 1).isFinish())
+                {
+                    Level.remove((Level.size() - 1));
+                    Level.add(new Wall(NewLeft, thickness, Level.get(0).getTop(), NewGap, wall));
                 }
                 else
                 {
-                    Level.add(0, new Wall(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap, Color.YELLOW, wall));
+                    Level.get(Level.size() - 1).modify(NewLeft, thickness, Level.get(0).getTop() - thickness, NewGap);
+                    Collections.rotate(Level, 1);
                     Checkpoint += 1;
                 }
 
@@ -132,12 +138,13 @@ public class Wall_Manager {
 
                 LastLeft = NewLeft;
                 LastGap = NewGap;
-            }
         }
+
         if (BoostLevel.get(0).getTop() >= Constants.Screen_Height )
         {
-            BoostLevel.remove(BoostLevel.size()-1);
-            BoostLevel.add(0, new Boost(LastLeft + 10 + (int) (Math.random() * (LastGap - 100)), Level.get(0).getTop(), Color.BLUE, arrow));
+            BoostLevel.get(BoostLevel.size()-1).modify(LastLeft + 10 + (int) (Math.random() * (LastGap - 100)), Level.get(0).getTop() + thickness/2);
+
+            Collections.rotate(BoostLevel, 1);
         }
         for(Wall El : Level)
         {
@@ -147,12 +154,23 @@ public class Wall_Manager {
         {
             X.move(speed);
         }
-        if (speed < 50)
+        if (levelFinished)
+        {
+            speed -= speed > 10 ? 10 : 0;
+        }
+        else if (speed < 50)
         {speed++;}
     }
 
     public double getTime(){
         return lvlTime;
+    }
+
+    public void pauseTime(){
+        if (!pause)
+        {pause = true;}
+        else
+        {pause = false;}
     }
 
     public void increaseSpeed()
@@ -204,7 +222,11 @@ public class Wall_Manager {
 
     public double getLvlTime(){
         lvlTime = System.nanoTime() - startTime;
-        double Seconds = (double) lvlTime / 1000000000.0;
+        double Seconds =  Math.round((double) lvlTime / 10000000.0)/100.0d;
         return Seconds;
+    }
+
+    public boolean isStart(){
+        return start;
     }
 }

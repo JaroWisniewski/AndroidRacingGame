@@ -25,10 +25,11 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
     private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
     private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
-
+    private Paint UI;
     private sensorData Sensor;
     private long frameTime;
 
+    public SoundPlayer soundPlayer;
     private GameCharacter Player;
     private Background Road;
     private Point PlayerPoint;
@@ -37,6 +38,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
     public GameScreen(Context context) {
         super(context);
 
+        soundPlayer = new SoundPlayer(Constants.context);
 
         getHolder().addCallback(this);
 
@@ -59,6 +61,15 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         int gap = 4*Constants.Screen_Width/5;
         Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow);
 
+        UI = new Paint();
+
+        UI.setColor(Color.BLUE);
+
+        UI.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        UI.setTextSize(90);
+
+        soundPlayer.playEngine();
     }
 
     @Override
@@ -73,11 +84,11 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         PlayerPoint = new Point(getWidth()/2, 3*getHeight()/4);
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Constants.context);
 
+        soundPlayer.playEngine();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
     }
 
     @Override
@@ -92,6 +103,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+        soundPlayer.setSoundPause();
 
 
     }
@@ -113,6 +125,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         if ( Wall_Manager.boostCheck(Player))
         {
             Wall_Manager.increaseSpeed();
+            soundPlayer.playBoost();
+            soundPlayer.autoResume();
         }
         if (Wall_Manager.collisionCheck(Player))
         {
@@ -169,15 +183,10 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
 
         Player.draw(canvas);
 
-        Paint UI = new Paint();
-
-        UI.setColor(Color.RED);
-
-        UI.setStyle(Paint.Style.FILL_AND_STROKE);
-
-        UI.setTextSize(200);
-
-        canvas.drawText(Double.toString(Wall_Manager.getLvlTime()), 100, getWidth()/2, UI);
+        if(Wall_Manager.isStart()) {
+            canvas.drawText("TIME : ", getWidth()/2 - 350,  getHeight() / 10, UI);
+            canvas.drawText(Double.toString(Wall_Manager.getLvlTime()), getWidth()/2,  getHeight() / 10, UI);
+        }
 
     }
 }

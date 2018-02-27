@@ -13,7 +13,7 @@ import android.util.Log;
 public class Finish extends Wall {
 
     public Finish(int LeftSide, int Thickness, int Top, int gap, int Color, Bitmap map) {
-        super(LeftSide, Thickness, Top, gap, Color, map);
+        super(LeftSide, Thickness, Top, gap, map);
 
     }
 
