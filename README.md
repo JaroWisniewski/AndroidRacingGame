@@ -1,4 +1,4 @@
 # PlatformGame
 Platform Game version beta
 
-Mobile Applications Development Project - River Raid mobile version
+Mobile Applications Development Project - Road Racer

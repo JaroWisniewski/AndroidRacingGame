@@ -20,7 +20,6 @@ public class Wall {
     protected Bitmap wall_texture;
 
 
-    //TODO Bitmap added -- control the change
     public Wall(int LeftSide, int Thickness, int Top, int gap, int Color, Bitmap map) {
         this.Left = new Rect(0, Top, LeftSide, Top + Thickness);
         this.Right = new Rect(LeftSide + gap, Top, Constants.Screen_Width, Top + Thickness);
@@ -63,13 +62,7 @@ public class Wall {
 
 
     public void draw(Canvas canvas) {
-        int x = 0 ;
-        Paint CharColor = new Paint();
-        CharColor.setColor(color);
-        canvas.drawRect(Left, CharColor);
-        canvas.drawRect(Right, CharColor);
-        x = Left.right;
-        //TODO Check the texture attachment and fps
+        int x = Left.right;
         while (x >= (0-wall_texture.getWidth())) {
             canvas.drawBitmap(wall_texture, x - wall_texture.getWidth(), Left.top, null);
             x -= wall_texture.getWidth();

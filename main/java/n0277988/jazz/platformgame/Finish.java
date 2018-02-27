@@ -31,23 +31,13 @@ public class Finish extends Wall {
             }
             y += wall_texture.getHeight();
         }
-    }/*
-    }
-
-}
 
 
-    public void move(float speed) {
-        Left.top += speed;
-        Left.bottom += speed;
-        Right.top += speed;
-        Right.bottom += speed;
-
+        }
 
     @Override
     public boolean isFinish() {
         return true;
     }
 
-*/
 }

@@ -1,5 +1,6 @@
 package n0277988.jazz.platformgame;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,28 +17,20 @@ public class GameCharacter implements GameObject {
 
     private Bitmap character_bitmap;
     private Rect Character;
-    private int color;
 
-    public GameCharacter(Rect Rect, int Color, Bitmap bitmap)
+    public GameCharacter(Rect Rect, Context context)
     {
-        character_bitmap = bitmap;
+        Bitmap CharTextSmall = BitmapFactory.decodeResource(context.getResources(), R.drawable.car);
+        character_bitmap = Bitmap.createScaledBitmap(CharTextSmall, 180, 180, true);
         this.Character = Rect;
-        this.color = Color;
     }
 
     public Rect getCharacter(){
         return Character;
     }
 
-    public void setColor(int clr){
-        this.color = clr;
-    }
-
     @Override
     public void draw(Canvas canvas) {
-       // Paint CharColor = new Paint();
-       // CharColor.setColor(color);
-       // canvas.drawRect(Character, CharColor);
         canvas.drawBitmap(character_bitmap, Character.left, Character.top, null);
     }
 

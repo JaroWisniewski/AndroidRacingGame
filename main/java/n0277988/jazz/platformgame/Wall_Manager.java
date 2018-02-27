@@ -188,7 +188,7 @@ public class Wall_Manager {
         return false;
     }
 
-    public boolean boostCheckO(GameCharacter Player){
+    public boolean boostCheck(GameCharacter Player){
         for(Boost El : BoostLevel)
         {
             if (El.playerCollision(Player))
@@ -200,5 +200,11 @@ public class Wall_Manager {
     public int getSpeed()
     {
         return speed;
+    }
+
+    public double getLvlTime(){
+        lvlTime = System.nanoTime() - startTime;
+        double Seconds = (double) lvlTime / 1000000000.0;
+        return Seconds;
     }
 }

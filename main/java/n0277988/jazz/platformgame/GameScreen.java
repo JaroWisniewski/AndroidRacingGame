@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
@@ -17,17 +18,16 @@ import android.view.SurfaceView;
  * Created by jaros on 10/02/2018.
  */
 
-public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*, SensorEventListener*/ {
+public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
 
-    private Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.car);
     private Bitmap grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
     private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
     private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
     private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
 
     private sensorData Sensor;
-    private long frameRate;
+    private long frameTime;
 
     private GameCharacter Player;
     private Background Road;
@@ -46,13 +46,13 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
 
         Sensor = new sensorData();
         Sensor.sensorInitialization();
-        frameRate = System.currentTimeMillis();
+        frameTime = System.currentTimeMillis();
 
         Bitmap arrow = Bitmap.createScaledBitmap(Arrow, 100, 100, true);
         Bitmap finishSmall = Bitmap.createScaledBitmap(finish, 256,256,true);
 
-        PlayerPoint = new Point(getWidth()/2, getHeight()/2);
-        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharMap);
+        PlayerPoint = new Point(getWidth()/2, 3*getHeight()/4);
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Constants.context);
 
         Road = new Background(asphalt);
 
@@ -70,9 +70,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         thread.setRunning(true);
         thread.start();
 
-        Bitmap CharTextSmall = Bitmap.createScaledBitmap(CharMap, 180, 180, true);
-        PlayerPoint = new Point(getWidth()/2, getHeight()/2);
-        Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
+        PlayerPoint = new Point(getWidth()/2, 3*getHeight()/4);
+        Player = new GameCharacter(new Rect(20, 20, 200, 200), Constants.context);
 
     }
 
@@ -111,28 +110,24 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     }
 
     public void update() {
-        if ( Wall_Manager.boostCheckO(Player))
+        if ( Wall_Manager.boostCheck(Player))
         {
             Wall_Manager.increaseSpeed();
         }
         if (Wall_Manager.collisionCheck(Player))
         {
-            Player.setColor(Color.rgb(255, 0, 0));
             Wall_Manager.decreaseSpeed();
         }
-        else
+
+
+        if(frameTime < Constants.Start_Time)
         {
-            Player.setColor(Color.rgb(255, 255, 255));
+            frameTime = Constants.Start_Time;
         }
 
-        if(frameRate < Constants.Start_Time)
-        {
-            frameRate = Constants.Start_Time;
-        }
+        int elapsedTime = (int) (System.nanoTime() - frameTime);
 
-        int elapsedTime = (int) (System.nanoTime() - frameRate);
-
-        frameRate = System.nanoTime();
+        frameTime = System.nanoTime();
 
         if(Sensor.getOrientation() != null && Sensor.startOrientation != null)
         {
@@ -173,6 +168,16 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Wall_Manager.draw(canvas);
 
         Player.draw(canvas);
+
+        Paint UI = new Paint();
+
+        UI.setColor(Color.RED);
+
+        UI.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        UI.setTextSize(200);
+
+        canvas.drawText(Double.toString(Wall_Manager.getLvlTime()), 100, getWidth()/2, UI);
 
     }
 }

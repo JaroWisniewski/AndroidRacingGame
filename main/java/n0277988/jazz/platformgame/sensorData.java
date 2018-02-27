@@ -43,7 +43,7 @@ public class sensorData implements SensorEventListener {
          return startOrientation;
     }
 
-    public void startGame()
+    public void resetGame()
     {
         startOrientation = null;
     }
