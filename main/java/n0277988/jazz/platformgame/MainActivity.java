@@ -24,6 +24,8 @@ public GameScreen GamePanel;
         getWindowManager().getDefaultDisplay().getMetrics(DM);
         Constants.Screen_Height = DM.heightPixels;
         Constants.Screen_Width = DM.widthPixels;
+        Constants.Finish = 10;
+        Constants.context = this;
 
         GamePanel = new GameScreen(this);
 

@@ -20,8 +20,7 @@ import java.util.Random;
 
 public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*, SensorEventListener*/ {
     private MainThread thread;
-   // private static final int SENSOR_DELAY = 500 * 1000; // 500ms
-   // private static final int FROM_RADS_TO_DEGS = -57;
+
     private Bitmap CharMap = BitmapFactory.decodeResource(getResources(), R.drawable.car);
     private Bitmap grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
     private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
@@ -32,8 +31,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     private Point PlayerPoint;
     private Random random;
     private Wall_Manager Wall_Manager;
-   // public SensorManager SensMan;
-   // public Sensor Sensor;
     private Context Context;
     private int sideMovement = 0;
 
@@ -48,11 +45,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
 
         setFocusable(true);
 
-        /*
-        SensMan = (SensorManager) Context.getSystemService(Context.SENSOR_SERVICE);
-        Sensor = SensMan.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
-        SensMan.registerListener(this, Sensor, SENSOR_DELAY);
-*/
         Bitmap arrow = Bitmap.createScaledBitmap(Arrow, 100, 100, true);
         Bitmap finishSmall = Bitmap.createScaledBitmap(finish, 256,256,true);
         sideMovement = getWidth()/2;
@@ -222,5 +214,5 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
         Log.d("Roll", Float.toString(roll));
         Log.d("Move", Float.toString(sideMovement));
 
-    }
+    }*/
 
