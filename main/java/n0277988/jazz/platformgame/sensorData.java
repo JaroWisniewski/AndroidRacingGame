@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 
 /**
  * Created by jaros on 26/02/2018.
+ * Motion Sensor controller
  */
 
 public class sensorData implements SensorEventListener {
@@ -20,10 +21,19 @@ public class sensorData implements SensorEventListener {
      private float[] accData;
      private float[] magData;
 
-     private float[] orientation;
+     private float[] orientation = new float[3];
      public float[] startOrientation = null;
 
-     public float[] getOrientation(){
+
+     public sensorData()
+    {
+        SensMan = (SensorManager) Constants.context.getSystemService(Context.SENSOR_SERVICE);
+        magnet = SensMan.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        accelerometer = SensMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    }
+
+     public float[] getOrientation()
+     {
          return orientation;
     }
 
@@ -38,21 +48,45 @@ public class sensorData implements SensorEventListener {
         startOrientation = null;
     }
 
+
+
     public void sensorInitialization() {
-        SensMan = (SensorManager) Constants.context.getSystemService(Context.SENSOR_SERVICE);
-        magnet = SensMan.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        accelerometer = SensMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         SensMan.registerListener(this, magnet, SensorManager.SENSOR_DELAY_GAME);
         SensMan.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
     }
 
+    public void pause(){
+         SensMan.unregisterListener(this);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+            accData = event.values;
+        }
+        else if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+        {
+            magData = event.values;
+        }
+        if(accData != null && magData != null)
+        {
+            float[] R = new float[9];
+            float[] I = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, accData, magData);
+            if (success)
+            {
+                SensorManager.getOrientation(R, orientation);
+                if(startOrientation == null)
+                {
+                    startOrientation = new float[orientation.length];
+                    System.arraycopy(orientation, 0, startOrientation, 0, orientation.length);
+                }
+            }
+        }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }

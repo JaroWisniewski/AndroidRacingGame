@@ -11,4 +11,5 @@ public class Constants {
     public static int Screen_Width;
     public static int Finish;
     public static Context context;
+    public static long Start_Time;
 }

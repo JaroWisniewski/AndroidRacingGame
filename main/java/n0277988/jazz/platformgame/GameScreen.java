@@ -5,14 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.Random;
 
 /**
  * Created by jaros on 10/02/2018.
@@ -26,18 +25,18 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
     private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
     private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
+
+    private sensorData Sensor;
+    private long frameRate;
+
     private GameCharacter Player;
     private Background Road;
     private Point PlayerPoint;
-    private Random random;
     private Wall_Manager Wall_Manager;
-    private Context Context;
-    private int sideMovement = 0;
 
     public GameScreen(Context context) {
         super(context);
 
-        Context = context;
 
         getHolder().addCallback(this);
 
@@ -45,10 +44,14 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
 
         setFocusable(true);
 
+        Sensor = new sensorData();
+        Sensor.sensorInitialization();
+        frameRate = System.currentTimeMillis();
+
         Bitmap arrow = Bitmap.createScaledBitmap(Arrow, 100, 100, true);
         Bitmap finishSmall = Bitmap.createScaledBitmap(finish, 256,256,true);
-        sideMovement = getWidth()/2;
-        PlayerPoint = new Point(sideMovement, getHeight()/2);
+
+        PlayerPoint = new Point(getWidth()/2, getHeight()/2);
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharMap);
 
         Road = new Background(asphalt);
@@ -62,12 +65,13 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new MainThread(getHolder(), this);
 
+        Constants.Start_Time = System.currentTimeMillis();
+
         thread.setRunning(true);
         thread.start();
 
         Bitmap CharTextSmall = Bitmap.createScaledBitmap(CharMap, 180, 180, true);
-        sideMovement = getWidth()/2;
-        PlayerPoint = new Point(sideMovement, getHeight()/2);
+        PlayerPoint = new Point(getWidth()/2, getHeight()/2);
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Color.rgb(0,0,255), CharTextSmall);
 
     }
@@ -121,6 +125,36 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
             Player.setColor(Color.rgb(255, 255, 255));
         }
 
+        if(frameRate < Constants.Start_Time)
+        {
+            frameRate = Constants.Start_Time;
+        }
+
+        int elapsedTime = (int) (System.nanoTime() - frameRate);
+
+        frameRate = System.nanoTime();
+
+        if(Sensor.getOrientation() != null && Sensor.startOrientation != null)
+        {
+            float roll = Sensor.getOrientation()[2] - Sensor.startOrientation[2];
+
+            float x_move = roll * Constants.Screen_Width/250000000f;
+
+            PlayerPoint.x += Math.abs(x_move*elapsedTime) > 5 ? x_move*elapsedTime : 0 ;
+        }
+
+        if(PlayerPoint.x < 0)
+        {
+            PlayerPoint.x = 0;
+        }
+        else if (PlayerPoint.x > Constants.Screen_Width)
+        {
+            PlayerPoint.x = Constants.Screen_Width;
+        }
+        else
+        {
+
+        }
 
         Player.update(PlayerPoint);
 
@@ -142,77 +176,3 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback/*,
 
     }
 }
-/*
-    // ------------------- Sensor movement change ----------------------------
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor == Sensor) {
-            if (event.values.length > 4) {
-                float[] truncatedRotationVector = new float[4];
-                System.arraycopy(event.values, 0, truncatedRotationVector, 0, 4);
-                updatePitch(truncatedRotationVector);
-
-                PlayerPoint.set(sideMovement ,  (getHeight()/6*5) );
-            } else {
-                updatePitch(event.values);
-                 PlayerPoint.set(sideMovement , getHeight()/6*5);
-            }
-
-        }
-    }
-
-    // ----------------- Accuracy of Rotation Sensor ------------------------
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    private void updatePitch(float[] vectors) {
-        float[] rotationMatrix = new float[9];
-        SensorManager.getRotationMatrixFromVector(rotationMatrix, vectors);
-        int worldAxisX = SensorManager.AXIS_X;
-        int worldAxisZ = SensorManager.AXIS_Z;
-        float[] adjustedRotationMatrix = new float[9];
-        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisX, worldAxisZ, adjustedRotationMatrix);
-        float[] orientation = new float[3];
-        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
-        float pitch = 90.0f + (orientation[1] * FROM_RADS_TO_DEGS);
-        float roll = orientation[2] * FROM_RADS_TO_DEGS;
-
-
-        if(roll<0)
-        {roll=-1;}
-        else
-        {roll=1;}
-
-        pitch = pitch * roll;
-       // int NewSideMovement = (int) ;
-        if(pitch > 70)
-        {
-            dMovement = -20;
-        }
-        else if (pitch < 70 && pitch > 15)
-        {
-            dMovement = -10;
-        }
-        else if (pitch < 15 && pitch > -15)
-        {
-            dMovement = 0;
-        }
-        else if(pitch < -15 && pitch > - 70)
-        {
-            dMovement = 10;
-        }
-        else
-        {
-            dMovement = 20;
-        }
-        sideMovement += dMovement;
-
-      //  sideMovement = (int) (getWidth()/2 - (pitch * roll) * (getWidth() / 60));
-        Log.d("Pitch", Float.toString(pitch));
-        Log.d("Roll", Float.toString(roll));
-        Log.d("Move", Float.toString(sideMovement));
-
-    }*/
-
