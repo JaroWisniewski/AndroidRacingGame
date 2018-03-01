@@ -9,31 +9,44 @@ import android.media.SoundPool;
  */
 
 public class SoundPlayer {
+    private static SoundPool soundEngine;
     private static SoundPool soundPool;
     private static int engine;
     private static int boost;
+    private static int cheer;
 
     public SoundPlayer(Context context){
 
+        soundEngine = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+
         soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
 
-        engine = soundPool.load(context, R.raw.motor_loop, 1);
-        boost = soundPool.load(context, R.raw.boost, 2);
+        engine = soundEngine.load(context, R.raw.motor_loop, 1);
+        boost = soundPool.load(context, R.raw.boost, 1);
+        cheer = soundPool.load(context, R.raw.cheer, 2);
     }
 
     public void playEngine(){
-        soundPool.play(engine, 1.0f, 1.0f, 1,-1,1.0f);
+
+        if (soundEngine != null)
+        {soundEngine.play(engine, 1.0f, 1.0f, 1,-1,1.0f);}
     }
 
     public void playBoost(){
         soundPool.play(boost, 1.0f, 1.0f, 1,0,1.0f);
     }
 
+    public void playCheer(){
+        soundPool.play(cheer, 1.0f, 1.0f, 1,0,1.0f);
+    }
+
     public void setSoundPause (){
         soundPool.autoPause();
+        soundEngine.autoPause();
     }
 
     public void autoResume(){
         soundPool.autoResume();
+        soundEngine.autoResume();
     }
 }

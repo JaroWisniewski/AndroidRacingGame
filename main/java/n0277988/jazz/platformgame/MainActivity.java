@@ -30,6 +30,6 @@ public GameScreen GamePanel;
         GamePanel = new GameScreen(this);
 
         setContentView(GamePanel);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT); // added
     }
 }

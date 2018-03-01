@@ -35,9 +35,10 @@ public class Wall_Manager {
     private Bitmap finishMap;
     private Bitmap arrow;
     private boolean pause;
+    private SoundPlayer Sp;
 
 
-    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost){
+    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost, SoundPlayer sp){
         this.wall = wall;
         this.finishMap = finish;
         this.arrow = boost;
@@ -53,6 +54,7 @@ public class Wall_Manager {
         this.startTime = 0;
         this.levelFinished = false;
         this.pause = false;
+        this.Sp = sp;
 
         Level = new ArrayList<>();
 
@@ -89,6 +91,7 @@ public class Wall_Manager {
             Log.d("Time-------------", Double.toString(Seconds));
             start = false;
             levelFinished = true;
+            Sp.playCheer();
         }
         if(Level.get(Level.size()-1).getTop() >= Constants.Screen_Height )
         {
@@ -166,16 +169,11 @@ public class Wall_Manager {
         return lvlTime;
     }
 
-    public void pauseTime(){
-        if (!pause)
-        {pause = true;}
-        else
-        {pause = false;}
-    }
 
     public void increaseSpeed()
     {
         speed += 10;
+        Sp.playBoost();
     }
 
     public void decreaseSpeed()
@@ -228,5 +226,9 @@ public class Wall_Manager {
 
     public boolean isStart(){
         return start;
+    }
+
+    public boolean isLevelFinished(){
+        return levelFinished;
     }
 }

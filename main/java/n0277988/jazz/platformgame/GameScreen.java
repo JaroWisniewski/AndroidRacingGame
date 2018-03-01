@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -26,6 +27,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
     private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
     private Paint UI;
+    private MediaPlayer Mp = null;
+
     private sensorData Sensor;
     private long frameTime;
 
@@ -39,6 +42,9 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         soundPlayer = new SoundPlayer(Constants.context);
+
+        Mp = MediaPlayer.create(Constants.context, R.raw.game);
+        Mp.setVolume(0.5f, 0.5f);
 
         getHolder().addCallback(this);
 
@@ -59,7 +65,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         Road = new Background(asphalt);
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow);
+        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow, soundPlayer);
 
         UI = new Paint();
 
@@ -85,10 +91,12 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         Player = new GameCharacter(new Rect(20, 20, 200, 200), Constants.context);
 
         soundPlayer.playEngine();
+        Mp.start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        soundPlayer.autoResume();
     }
 
     @Override
@@ -104,7 +112,9 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
             retry = false;
         }
         soundPlayer.setSoundPause();
-
+        Mp.stop();
+        Mp.release();
+        Mp = null;
 
     }
 
@@ -125,8 +135,6 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         if ( Wall_Manager.boostCheck(Player))
         {
             Wall_Manager.increaseSpeed();
-            soundPlayer.playBoost();
-            soundPlayer.autoResume();
         }
         if (Wall_Manager.collisionCheck(Player))
         {
@@ -143,26 +151,22 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
 
         frameTime = System.nanoTime();
 
-        if(Sensor.getOrientation() != null && Sensor.startOrientation != null)
-        {
-            float roll = Sensor.getOrientation()[2] - Sensor.startOrientation[2];
+        if(!Wall_Manager.isLevelFinished())
 
-            float x_move = roll * Constants.Screen_Width/250000000f;
-
-            PlayerPoint.x += Math.abs(x_move*elapsedTime) > 5 ? x_move*elapsedTime : 0 ;
-        }
-
-        if(PlayerPoint.x < 0)
         {
-            PlayerPoint.x = 0;
-        }
-        else if (PlayerPoint.x > Constants.Screen_Width)
-        {
-            PlayerPoint.x = Constants.Screen_Width;
-        }
-        else
-        {
+            if (Sensor.getOrientation() != null && Sensor.startOrientation != null) {
+                float roll = Sensor.getOrientation()[2] - Sensor.startOrientation[2];
 
+                float x_move = roll * Constants.Screen_Width / 250000000f;
+
+                PlayerPoint.x += Math.abs(x_move * elapsedTime) > 5 ? x_move * elapsedTime : 0;
+            }
+
+            if (PlayerPoint.x < 0) {
+                PlayerPoint.x = 0;
+            } else if (PlayerPoint.x > Constants.Screen_Width) {
+                PlayerPoint.x = Constants.Screen_Width;
+            }
         }
 
         Player.update(PlayerPoint);
