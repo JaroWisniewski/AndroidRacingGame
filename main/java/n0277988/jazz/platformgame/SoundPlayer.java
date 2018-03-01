@@ -14,16 +14,18 @@ public class SoundPlayer {
     private static int engine;
     private static int boost;
     private static int cheer;
+    private static int menu;
 
     public SoundPlayer(Context context){
 
         soundEngine = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
 
-        soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 
         engine = soundEngine.load(context, R.raw.motor_loop, 1);
         boost = soundPool.load(context, R.raw.boost, 1);
         cheer = soundPool.load(context, R.raw.cheer, 2);
+        menu = soundPool.load(context, R.raw.intro_finish,3);
     }
 
     public void playEngine(){
@@ -38,6 +40,10 @@ public class SoundPlayer {
 
     public void playCheer(){
         soundPool.play(cheer, 1.0f, 1.0f, 1,0,1.0f);
+    }
+
+    public void playMenu(){
+        soundPool.play(menu, 1.0f, 1.0f, 1,0,1.0f);
     }
 
     public void setSoundPause (){
