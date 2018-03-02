@@ -6,6 +6,8 @@ import android.media.SoundPool;
 
 /**
  * Created by Jaroslaw on 27/02/2018.
+ *
+ * Sound Player - sound effects management
  */
 
 public class SoundPlayer {

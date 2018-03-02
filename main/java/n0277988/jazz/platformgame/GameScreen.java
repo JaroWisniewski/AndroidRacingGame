@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,29 +16,46 @@ import android.view.SurfaceView;
 
 /**
  * Created by jaros on 10/02/2018.
+ *
+ * Game Screen Surface.
+ * Creates Bitmaps, Game Objects, and main game thread.
+ *
  */
 
 public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
+    //Game Thread
     private MainThread thread;
 
+    // Bitmaps
     private Bitmap grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
     private Bitmap asphalt = BitmapFactory.decodeResource(getResources(), R.drawable.asphalt);
     private Bitmap finish = BitmapFactory.decodeResource(getResources(), R.drawable.finish);
     private Bitmap Arrow = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
-    private Paint UI;
-    private MediaPlayer Mp = null;
 
+    //Timer
+    private Paint UI;
+
+    // Sensor related variables
     private sensorData Sensor;
     private long frameTime;
 
+    //Sound Control
+    private MediaPlayer Mp = null;
     public SoundPlayer soundPlayer;
+
+    //Game Objects
     private GameCharacter Player;
     private Background Road;
     private Point PlayerPoint;
     private Wall_Manager Wall_Manager;
 
-    public GameScreen(Context context) {
+    //Database Management
+    private DatabaseManager db;
+
+    public GameScreen(Context context, DatabaseManager data) {
         super(context);
+
+        db = data;
 
         soundPlayer = new SoundPlayer(Constants.context);
 
@@ -65,7 +81,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         Road = new Background(asphalt);
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow, soundPlayer);
+        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow, soundPlayer, db);
 
         UI = new Paint();
 
@@ -81,6 +97,11 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new MainThread(getHolder(), this);
+
+        soundPlayer = new SoundPlayer(Constants.context);
+
+        Mp = MediaPlayer.create(Constants.context, R.raw.game);
+        Mp.setVolume(0.5f, 0.5f);
 
         Constants.Start_Time = System.currentTimeMillis();
 
@@ -115,6 +136,11 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         Mp.stop();
         Mp.release();
         Mp = null;
+        grass = null;
+        asphalt = null;
+        finish = null;
+        Arrow = null;
+        Player = null;
 
     }
 

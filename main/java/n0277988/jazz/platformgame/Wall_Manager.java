@@ -1,44 +1,46 @@
 package n0277988.jazz.platformgame;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import n0277988.jazz.platformgame.Constants;
-import n0277988.jazz.platformgame.Wall;
-
 /**
  * Created by jaros on 20/02/2018.
+ *
+ * Wall Manager - responsible for random generation of the wall objects, boosts and finish line
+ *
+ * Controls the collision
+ *
+ * Updates the speed
  */
 
 public class Wall_Manager {
-    private ArrayList <Boost> BoostLevel;
-    private ArrayList <Wall> Level;
-    private int Gap;
-    private int LastGap;
-    private int thickness;
-    private int speed;
-    private int Checkpoint;
-    private int LastLeft;
-    private int playerWidth;
+    private ArrayList <Boost> BoostLevel; // Array of Boost Objects
+    private ArrayList <Wall> Level; // Array of Wall objects
+    private int Gap; // gap length
+    private int LastGap; // previous gap length
+    private int thickness; // length of the wall - y value
+    private int speed; // speed of movement
+    private int Checkpoint; // Level checkpoint counter
+    private int LastLeft; // Last position of the left wall
+    private int playerWidth; // Player characters width
     private boolean start;// Level time counter start
-    private boolean levelFinished;// levelFinished (go to score Screen
+    private boolean levelFinished;// levelFinished (go to score Screen)
     private long lvlTime;
     private long startTime;
     private Bitmap wall;
     private Bitmap finishMap;
     private Bitmap arrow;
-    private boolean pause;
     private SoundPlayer Sp;
+    private DatabaseManager data;
 
 
-    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost, SoundPlayer sp){
+    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost, SoundPlayer sp, DatabaseManager db){
         this.wall = wall;
         this.finishMap = finish;
         this.arrow = boost;
@@ -53,8 +55,8 @@ public class Wall_Manager {
         this.lvlTime = 0;
         this.startTime = 0;
         this.levelFinished = false;
-        this.pause = false;
         this.Sp = sp;
+        this.data = db;
 
         Level = new ArrayList<>();
 
@@ -67,7 +69,7 @@ public class Wall_Manager {
     public void CreateLevel(){
         int NewLeft = 0;
         int NewGap = 0;
-        int CreateY = -2*Constants.Screen_Height;
+        int CreateY = -2*Constants.Screen_Height; //Starting point of creation
         while (CreateY < 0){
             NewLeft = (int)(Math.random()* Constants.Screen_Width/4);
             NewGap = 0;
@@ -78,7 +80,7 @@ public class Wall_Manager {
             Level.add(new Wall(NewLeft, thickness, CreateY, NewGap, wall));
 
             Checkpoint += 1;
-            CreateY += thickness;
+            CreateY += thickness; // Next Wall position
         }
         BoostLevel.add(0, new Boost(NewLeft + 20, CreateY - 100, arrow));
     }
@@ -92,6 +94,19 @@ public class Wall_Manager {
             start = false;
             levelFinished = true;
             Sp.playCheer();
+            boolean result = data.insertData("Jaro", Seconds);
+            if(result)
+            {
+                Intent score = new Intent(Constants.context, Main_Menu.class);
+                score.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Constants.context.startActivity(score);
+            }
+            else
+            {
+                Intent score = new Intent(Constants.context, Main_Menu.class);
+                score.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Constants.context.startActivity(score);
+            }
         }
         if(Level.get(Level.size()-1).getTop() >= Constants.Screen_Height )
         {

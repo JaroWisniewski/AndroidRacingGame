@@ -9,7 +9,7 @@ import android.content.Context;
 public class Constants {
     public static int Screen_Height;
     public static int Screen_Width;
-    public static int Finish;
-    public static Context context;
+    public static int Finish; // Length of the level
+    public static Context context; // Game activity
     public static long Start_Time;
 }

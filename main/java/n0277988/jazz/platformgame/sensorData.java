@@ -8,12 +8,12 @@ import android.hardware.SensorManager;
 
 /**
  * Created by jaros on 26/02/2018.
+ *
  * Motion Sensor controller
  */
 
 public class sensorData implements SensorEventListener {
-     private static final int SENSOR_DELAY = 500 * 1000; // 500ms
-     private static final int FROM_RADS_TO_DEGS = -57;
+
      private SensorManager SensMan;
      private Sensor magnet ;
      private Sensor accelerometer;

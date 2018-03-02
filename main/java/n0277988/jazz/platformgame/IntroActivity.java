@@ -12,9 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.VideoView;
 
-
+/**
+ * Intro - Displays the game intro.
+ */
 
 public class IntroActivity extends Activity {
+
     private VideoView Vw;
     private MediaPlayer Intro = null;
     private Intent Menu;

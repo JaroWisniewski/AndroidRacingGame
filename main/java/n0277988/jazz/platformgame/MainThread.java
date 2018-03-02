@@ -6,10 +6,12 @@ import android.view.SurfaceHolder;
 
 /**
  * Created by jaros on 13/02/2018.
+ *
+ * Main Thread Responsible for updating the game screen, drawing and limiting the frame rate
  */
 
 public class MainThread extends Thread {
-    public static final int MAX_FPS = 30;
+    public static final int MAX_FPS = 60;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
     private GameScreen gameScreen;
@@ -49,29 +51,14 @@ public class MainThread extends Thread {
 
             try {
                 canvas = this.surfaceHolder.lockCanvas();
-          //      synchronized (surfaceHolder) {
                     this.gameScreen.update();
                     this.gameScreen.draw(canvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
-
-                //    }
             }
             catch(Exception e)
                 {
                     e.printStackTrace();
-                }/*
-            finally
-            {
-                if (canvas != null)
-                {
-                    try
-                    {
-                        surfaceHolder.unlockCanvasAndPost(canvas);
-                    }
-                    catch (Exception e)
-                    {e.printStackTrace();}
                 }
-            }*/
             timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMillis;
             try
@@ -92,7 +79,7 @@ public class MainThread extends Thread {
             {
                 averageFPS = 1000000000 * (double) frameCount  / (double) totalTime;
 
-                Log.d("Average FPS", Double.toString(averageFPS));
+                Log.d("Average FPS", Double.toString(averageFPS)); // For quality control
                 frameCount = 0;
                 totalTime = 0;
 

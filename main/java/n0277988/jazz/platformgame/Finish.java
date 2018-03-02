@@ -2,12 +2,11 @@ package n0277988.jazz.platformgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.util.Log;
 
 /**
  * Created by Jaroslaw on 23/02/2018.
+ *
+ * Finish Child Class representing finish Line
  */
 
 public class Finish extends Wall {
@@ -38,6 +37,12 @@ public class Finish extends Wall {
     @Override
     public boolean isFinish() {
         return true;
+    }
+
+    //No collision
+    @Override
+    public boolean playerCollision(GameCharacter player) {
+        return false;
     }
 
 }

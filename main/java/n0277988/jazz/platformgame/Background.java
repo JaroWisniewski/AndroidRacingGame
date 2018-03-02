@@ -2,10 +2,11 @@ package n0277988.jazz.platformgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 /**
  * Created by Jaroslaw on 24/02/2018.
+ *
+ * Background Object - controls the movement and drawing of the background
  */
 
 public class Background implements GameObject {

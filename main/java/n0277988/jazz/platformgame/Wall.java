@@ -2,15 +2,12 @@ package n0277988.jazz.platformgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Created by jaros on 16/02/2018.
+ *
+ * Wall Object - drawing texture, movement and collision detection
  */
 
 public class Wall {

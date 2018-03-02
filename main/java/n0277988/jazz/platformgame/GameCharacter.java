@@ -1,16 +1,16 @@
 package n0277988.jazz.platformgame;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
 /**
  * Created by jaros on 16/02/2018.
+ *
+ * Game Character Object. Responsible for collision control, character texture, movement, and drawing
  */
 
 public class GameCharacter implements GameObject {
