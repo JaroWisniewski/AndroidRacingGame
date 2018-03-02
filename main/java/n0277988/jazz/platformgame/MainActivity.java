@@ -33,8 +33,6 @@ private String name;
 
         dm = new DatabaseManager(this);
 
-        dm.onUpgrade(dm.getReadableDatabase(),2,3);
-
         GamePanel = new GameScreen(this, dm, name);
 
 
