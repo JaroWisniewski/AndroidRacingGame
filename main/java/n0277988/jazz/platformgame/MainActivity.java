@@ -10,11 +10,16 @@ import android.view.WindowManager;
 public class MainActivity extends Activity {
 public GameScreen GamePanel;
 private DatabaseManager dm;
+private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        if (getIntent().hasExtra("NAME")) {
+            name = getIntent().getStringExtra("NAME");
+        }
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -23,12 +28,14 @@ private DatabaseManager dm;
         getWindowManager().getDefaultDisplay().getMetrics(DM);
         Constants.Screen_Height = DM.heightPixels;
         Constants.Screen_Width = DM.widthPixels;
-        Constants.Finish = 20; // TODO Increase the level length
+        Constants.Finish = 60;
         Constants.context = this;
 
         dm = new DatabaseManager(this);
 
-        GamePanel = new GameScreen(this, dm);
+        dm.onUpgrade(dm.getReadableDatabase(),2,3);
+
+        GamePanel = new GameScreen(this, dm, name);
 
 
 

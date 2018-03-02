@@ -51,9 +51,12 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
 
     //Database Management
     private DatabaseManager db;
+    private String Name;
 
-    public GameScreen(Context context, DatabaseManager data) {
+    public GameScreen(Context context, DatabaseManager data, String name) {
         super(context);
+
+        this.Name = name;
 
         db = data;
 
@@ -81,7 +84,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         Road = new Background(asphalt);
 
         int gap = 4*Constants.Screen_Width/5;
-        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow, soundPlayer, db);
+        Wall_Manager = new Wall_Manager(gap, grass.getHeight(),30, Player, grass, finishSmall, arrow, soundPlayer, db, Name);
 
         UI = new Paint();
 
@@ -151,7 +154,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                PlayerPoint.set((int) event.getX(), (int) event.getY());
+       //         PlayerPoint.set((int) event.getX(), (int) event.getY());
                 return true;
         }
         return false;

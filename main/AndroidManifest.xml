@@ -3,19 +3,15 @@
     package="n0277988.jazz.platformgame">
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".IntroActivity"
             android:screenOrientation="sensorLandscape">
@@ -25,11 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Main_Menu"
             android:screenOrientation="portrait">
-
+        </activity>
+        <activity android:name=".Name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog">
         </activity>
     </application>
 

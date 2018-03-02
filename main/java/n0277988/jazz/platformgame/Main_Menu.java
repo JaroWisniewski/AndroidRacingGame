@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 /**
  * Main Menu activity
@@ -23,12 +24,16 @@ public class Main_Menu extends Activity {
     private MediaPlayer menuSong = null;
     private SoundPlayer SP;
     private DatabaseManager Score;
-    private String Name = "Jaro";
+    private String Name = "User";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        if (getIntent().hasExtra("NAME")) {
+            Name = getIntent().getStringExtra("NAME");
+        }
 
         Score = new DatabaseManager(this);
 
@@ -43,14 +48,37 @@ public class Main_Menu extends Activity {
 
         setContentView(R.layout.activity_main__menu);
 
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(Name);
+        SP.playMenu();
+
     }
 
-        public void onClickStart(View view){
+    @Override
+    protected void onStart() {
+        super.onStart();
+        menuSong.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        menuSong.pause();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+    }
+
+    public void onClickStart(View view){
             SP.playMenu();
             Intent start = new Intent(this, MainActivity.class);
+            start.putExtra("NAME", Name);
             startActivity(start);
             SP.setSoundPause();
-            menuSong.release();
     }
 
     public void onClickQuit(View view){
@@ -78,9 +106,25 @@ public class Main_Menu extends Activity {
         builder.show();
     }
 
-    public void changeName (){
-
+    public void onClickName (View v){
+        Intent name = new Intent(this, Name.class);
+        startActivityForResult(name,1);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                Name = data.getStringExtra("NAME");
+                TextView name = (TextView) findViewById(R.id.name);
+                name.setText(Name);
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+            }
+        }
+    }//onActivityResult
 
 
 

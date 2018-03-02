@@ -38,9 +38,10 @@ public class Wall_Manager {
     private Bitmap arrow;
     private SoundPlayer Sp;
     private DatabaseManager data;
+    private String Name;
 
 
-    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost, SoundPlayer sp, DatabaseManager db){
+    public Wall_Manager(int gap, int thickness, int speed, GameCharacter player, Bitmap wall, Bitmap finish, Bitmap boost, SoundPlayer sp, DatabaseManager db, String name){
         this.wall = wall;
         this.finishMap = finish;
         this.arrow = boost;
@@ -57,6 +58,7 @@ public class Wall_Manager {
         this.levelFinished = false;
         this.Sp = sp;
         this.data = db;
+        this.Name = name;
 
         Level = new ArrayList<>();
 
@@ -94,10 +96,11 @@ public class Wall_Manager {
             start = false;
             levelFinished = true;
             Sp.playCheer();
-            boolean result = data.insertData("Jaro", Seconds);
+            boolean result = data.insertData(Name, Seconds);
             if(result)
             {
                 Intent score = new Intent(Constants.context, Main_Menu.class);
+                score.putExtra("NAME", Name);
                 score.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Constants.context.startActivity(score);
             }
@@ -105,7 +108,9 @@ public class Wall_Manager {
             {
                 Intent score = new Intent(Constants.context, Main_Menu.class);
                 score.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                score.putExtra("NAME", Name);
                 Constants.context.startActivity(score);
+                Log.d("Database", "Not Saved");
             }
         }
         if(Level.get(Level.size()-1).getTop() >= Constants.Screen_Height )
