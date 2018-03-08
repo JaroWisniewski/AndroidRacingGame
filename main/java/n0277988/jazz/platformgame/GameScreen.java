@@ -154,7 +154,7 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-       //         PlayerPoint.set((int) event.getX(), (int) event.getY());
+       //         PlayerPoint.set((int) event.getX(), (int) event.getY()); for testing purposes
                 return true;
         }
         return false;
@@ -170,6 +170,8 @@ public class GameScreen extends SurfaceView implements SurfaceHolder.Callback {
             Wall_Manager.decreaseSpeed();
         }
 
+
+        // to update frame time if user will change the screens
 
         if(frameTime < Constants.Start_Time)
         {

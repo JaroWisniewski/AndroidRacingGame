@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PlatformGame</string>
+    <string name="app_name">Android Racer</string>
 
     <string name="title_activity_intro">Intro</string>
     <string name="dummy_button">Dummy Button</string>

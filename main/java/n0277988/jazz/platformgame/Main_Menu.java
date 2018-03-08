@@ -92,6 +92,7 @@ public class Main_Menu extends Activity {
     }
 
     public void onClickScore(View v){
+
         Cursor resource = Score.scoreCard();
         StringBuffer buffer = new StringBuffer();
         while (resource.moveToNext())
